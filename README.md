@@ -12,6 +12,10 @@ mount -o compress=lzo,noatime /dev/sda /mnt/btrfs_pool  # pick any dev from raid
 btrfs subvolume list /mnt/btrfs_pool 
 btrfs filesystem df /mnt/btrfs_pool # true usage numbers
 df -h # false usage numbers?
+umount /mnt/btrfs_pool
+```
+Install using Ubuntu installer (do not format, pick one dev or raid1 as / mount point)
+```
 btrfs subvolume create /mnt/btrfs_pool/root  # gets mounted to / with -o subvol=root
 btrfs subvolume create /mnt/btrfs_pool/home  # gets mounted to /home with -o subvol=home
 btrfs subvolume create /mnt/btrfs_pool/mnt/albums # gets mounted to /mnt/albums with -o subvol=albums
