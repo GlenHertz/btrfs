@@ -8,7 +8,7 @@ df -h
 mkfs.btrfs -L btrfs_pool -m raid1 -d raid1 /dev/sda /dev/sdb
 btrfs filesystem show
 mkdir /mnt/btrfs_pool
-mount -o compress=lzo,noatime /dev/sda /mnt/btrfs_pool  # pick any dev from raid
+mount -o compress=lzo,noatime /dev/sdb /mnt/btrfs_pool  # pick any dev from raid
 btrfs subvolume list /mnt/btrfs_pool 
 btrfs filesystem df /mnt/btrfs_pool # true usage numbers
 df -h # false usage numbers?
