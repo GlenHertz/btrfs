@@ -37,6 +37,20 @@ ID 263 gen 29 top level 5 path @albums
 ID 264 gen 30 top level 5 path @mythtv
 ID 265 gen 31 top level 5 path @scratch
 
+mint / # umount /mnt/btrfs_pool
+# Make a directory structure so it is the same as source copy:
+mint / # mkdir /mnt/btrfs_compat_dirs
+mint / # mount -o compress=lzo,noatime,subvol=@ /dev/sdb /mnt/btrfs_compat_dirs/
+mint / # mount -o compress=lzo,noatime,subvol=@home /dev/sdb /mnt/btrfs_compat_dirs/home
+mint / # mkdir /mnt/btrfs_compat_dirs/mnt/albums
+mint / # mount -o noatime,subvol=@albums /dev/sdb /mnt/btrfs_compat_dirs/mnt/albums
+mint / # mkdir /mnt/btrfs_compat_dirs/mnt/mythtv
+mint / # mount -o noatime,subvol=@mythtv /dev/sdb /mnt/btrfs_compat_dirs/mnt/mythtv
+mint / # mkdir /mnt/btrfs_compat_dirs/mnt/scratch
+mint / # mount -o compress=lzo,noatime,subvol=@scratch /dev/sdb /mnt/btrfs_compat_dirs/mnt/scratch
+
+rsync -av /path/to/sources/ /mnt/btrfs_compat_dirs/
+
 #btrfs subvolume create /mnt/btrfs_pool/root  # gets mounted to / with -o subvol=root
 #btrfs subvolume create /mnt/btrfs_pool/home  # gets mounted to /home with -o subvol=home
 #btrfs subvolume create /mnt/btrfs_pool/mnt/albums # gets mounted to /mnt/albums with -o subvol=albums
