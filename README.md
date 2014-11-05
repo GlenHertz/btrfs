@@ -52,7 +52,8 @@ exit # chroot
 cd /mnt/btrfs/@
 for dir in dev proc sys; do umount ./$dir; done  # get some error here
 lsof proc  # does it show anything for why you can't unmount...anyway...carry on.
-
+umount /mnt/sda2
+```
 
 # old stuff (WIP):
 
