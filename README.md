@@ -32,12 +32,18 @@ Start Ubuntu installer
 # Post reboot:
 
 1. `apt-get update`
+2. `apt-get install apt-btrfs-snapshot`
 2. `apt-get ugprade`
 3. Add second /btrfs drive: `btrfs device add /dev/sdb /`
 4. Convert to raid1: `btrfs balance -mconvert=raid1 -dconvert=raid1 /`
 5. Reeboot 
 
-Migrate old users, /home
+## Convert to LinuxMint 17
+
+http://community.linuxmint.com/tutorial/view/1711
+
+
+## Migrate old users, /home
 
 ```
 mkdir /mnt/btrfs
@@ -105,7 +111,7 @@ df -h
 mkfs.btrfs -L btrfs_pool -m raid1 -d raid1 /dev/sda /dev/sdb
 btrfs filesystem show
 mkdir /mnt/btrfs_pool
-mount -o compress=lzo,noatime /dev/sdb /mnt/btrfs_pool  # pick any dev from raid
+mount /dev/sdb /mnt/btrfs_pool  # pick any dev from raid
 btrfs subvolume list /mnt/btrfs_pool 
 btrfs filesystem df /mnt/btrfs_pool # true usage numbers
 df -h # false usage numbers?
@@ -136,14 +142,14 @@ ID 265 gen 31 top level 5 path @scratch
 mint / # umount /mnt/btrfs_pool
 # Make a directory structure so it is the same as source copy:
 mint / # mkdir /mnt/btrfs_compat_dirs
-mint / # mount -o compress=lzo,noatime,subvol=@ /dev/sdb /mnt/btrfs_compat_dirs/
-mint / # mount -o compress=lzo,noatime,subvol=@home /dev/sdb /mnt/btrfs_compat_dirs/home
+mint / # mount -o compress,subvol=@ /dev/sdb /mnt/btrfs_compat_dirs/
+mint / # mount -o compress,subvol=@home /dev/sdb /mnt/btrfs_compat_dirs/home
 mint / # mkdir /mnt/btrfs_compat_dirs/mnt/albums
-mint / # mount -o noatime,subvol=@albums /dev/sdb /mnt/btrfs_compat_dirs/mnt/albums
+mint / # mount -o subvol=@albums /dev/sdb /mnt/btrfs_compat_dirs/mnt/albums
 mint / # mkdir /mnt/btrfs_compat_dirs/mnt/mythtv
-mint / # mount -o noatime,subvol=@mythtv /dev/sdb /mnt/btrfs_compat_dirs/mnt/mythtv
+mint / # mount -o subvol=@mythtv /dev/sdb /mnt/btrfs_compat_dirs/mnt/mythtv
 mint / # mkdir /mnt/btrfs_compat_dirs/mnt/scratch
-mint / # mount -o compress=lzo,noatime,subvol=@scratch /dev/sdb /mnt/btrfs_compat_dirs/mnt/scratch
+mint / # mount -o compress,subvol=@scratch /dev/sdb /mnt/btrfs_compat_dirs/mnt/scratch
 
 rsync -av /path/to/sources/ /mnt/btrfs_compat_dirs/
 
@@ -156,9 +162,9 @@ rsync -av /path/to/sources/ /mnt/btrfs_compat_dirs/
 
 In /etc/fstab:
 ```
-LABEL=btrfs_pool    /              btrfs   defaults,noatime,compress=lzo,subvol=@  0 0
-LABEL=btrfs_pool    /home          btrfs   defaults,noatime,compress=lzo,subvol=@home  0 0
-LABEL=btrfs_pool    /mnt/albums    btrfs   defaults,noatime,subvol=@albums         0 0
-LABEL=btrfs_pool    /mnt/mythtv    btrfs   defaults,noatime,subvol=@mythtv         0 0
-LABEL=btrfs_pool    /media/btrfs   btrfs   defaults,noauto,compress=lzo,subvolid=0    0 0
+LABEL=btrfs_pool    /              btrfs   defaults,compress,subvol=@  0 0
+LABEL=btrfs_pool    /home          btrfs   defaults,compress,subvol=@home  0 0
+LABEL=btrfs_pool    /mnt/albums    btrfs   defaults,subvol=@albums         0 0
+LABEL=btrfs_pool    /mnt/mythtv    btrfs   defaults,subvol=@mythtv         0 0
+LABEL=btrfs_pool    /media/btrfs   btrfs   defaults,noauto,compress,subvolid=0    0 0
 ```
