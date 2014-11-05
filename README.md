@@ -45,6 +45,15 @@ apt-get update
 apt-get upgrade
 ```
 
+## Before the reboot:
+```
+umount /boot
+exit # chroot
+cd /mnt/btrfs/@
+for dir in dev proc sys; do umount ./$dir; done  # get some error here
+lsof proc  # does it show anything for why you can't unmount...anyway...carry on.
+
+
 # old stuff (WIP):
 
 
