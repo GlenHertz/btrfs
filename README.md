@@ -1,14 +1,32 @@
 Notes for my zfs->btrfs migration
 ==============
 
-### Boot into Ubuntu 14.10 live USB
+### Boot into Ubuntu 14.04.1 live CD/USB
 
+I'm using the following mounts, yours may differ:
+1. `/dev/sda` -> a large hard drive
+2. `/dev/sdb` -> a temporary USB stick with the Ubuntu installer on it
+3. `/dev/sdc` -> a permanent USB stick to boot from
+
+Pre-boot:
 1. Enable UEFI boot in bios
-2. Use `gparted` to create a new GPT partition table
-3. Make a 10MB partition 1 and set type to "bios_gpt", LABEL=BIOS
-4. Make a 500MB partition 2 for ext4, LABEL=BOOT
-5. Make the rest into a btrfs partition 3, LABEL=BTRFS
-6. 
+2. Start "Try Ubuntu" to full boot
+
+In "Try Ubuntu":
+3. Use `gdisk /dev/sdc` (USB stick for boot drive) to create a new GPT partition table, `o`
+4. Make complete drive drive btrfs (no partition tables at all): `mkfs.btrfs /dev/sda  # add -f argument when sure`
+5. `apt-get install grub-efi-amd64`
+
+Start Ubuntu installer
+1. Select to make your own partitions
+2. Select /dev/sda to be btrfs, formated, mount /
+3. On /dev/sdc1 (USB boot stick), make first partition at least 10 MB of type "EFI Boot Partition"
+4. Make rest of sdc into a partition: /dev/sdc2, ext2, format, mount /boot
+5. Walk through installer
+6. Reboot, remove /dev/sdb, check that it boots correctly
+
+
+# Old stuff:
 
 ### From a Terminal:
 
