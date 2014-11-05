@@ -1,7 +1,52 @@
-btrfs
-=====
+Notes for my zfs->btrfs migration
+==============
 
-# Create filesystem
+### Boot into Ubuntu 14.10 live USB
+
+1. Enable UEFI boot in bios
+2. Use `gparted` to create a new GPT partition table
+3. Make a 10MB partition 1 and set type to "bios_gpt", LABEL=BIOS
+4. Make a 500MB partition 2 for ext4, LABEL=BOOT
+5. Make the rest into a btrfs partition 3, LABEL=BTRFS
+6. 
+
+### From a Terminal:
+
+```
+mkdir /mnt/btrfs
+mount -o defaults /dev/sda3 /mnt/btrfs
+cd !$
+# Setup standard Ubuntu subvolumes:
+btrfs subvolume create @
+btrfs subvolume create @home
+# Copy old files across to btrfs:
+mkdir /mnt/old
+mount /dev/sdb2 /mnt/old
+rsync -av --exclude 'mnt' --exclude 'home'  /mnt/old/ /mnt/btrfs/@/  # After we know we can boot cp excluded
+cd @/etc
+# find . -name '*zfs*'  # remove these files
+cd /mnt/btrfs/@
+for dir in dev proc sys; do mount -o bind /$dir ./$dir; done
+chroot .
+mount /dev/sda2 /boot
+ls -l /dev/disk/by-uuid
+```
+### Edit `etc/fstab` to be something like:
+```
+# / was on /dev/sda3 during installation
+UUID=15060261-d3a4-4c1d-840c-bce526a72e62 	/               btrfs defaults,subvol=@ 0 1
+# /boot was on /dev/sda2 during installation
+UUID=1183af99-3714-4e95-8cbc-8b20c3a9fb81       /boot           ext4    defaults        0       2
+```
+
+### Update software:
+```
+apt-get update
+apt-get upgrade
+```
+
+# old stuff (WIP):
+
 
 ```
 df -h
@@ -21,7 +66,6 @@ mint ~ # btrfs subvolume list /mnt/btrfs_pool
 ID 258 gen 26 top level 5 path @
 ID 259 gen 21 top level 5 path @home
 ```
-
 
 ```
 mint ~ # btrfs subvolume create /mnt/btrfs_pool/@albums
