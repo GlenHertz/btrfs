@@ -1,7 +1,7 @@
 Notes for my zfs->btrfs migration
 ==============
 
-### Boot into Ubuntu 14.04.1 live CD/USB
+### Boot into Linux Mint 17.1 Cinnamon live CD/USB
 
 I'm using the following mounts, yours may differ:
 
@@ -16,9 +16,7 @@ Pre-boot:
 
 In "Try Ubuntu":
 
-3. Use `gdisk /dev/sdc` (USB stick for boot drive) to create a new GPT partition table, `o`
-4. Make complete drive drive btrfs (no partition tables at all): `mkfs.btrfs /dev/sda  # add -f argument when sure`
-5. `apt-get install grub-efi-amd64`
+5. `apt-get install btrfs-tools`
 
 Start Ubuntu installer
 
@@ -37,10 +35,6 @@ Start Ubuntu installer
 3. Add second /btrfs drive: `btrfs device add /dev/sdb /`
 4. Convert to raid1: `btrfs balance -mconvert=raid1 -dconvert=raid1 /`
 5. Reeboot 
-
-## Convert to LinuxMint 17
-
-http://community.linuxmint.com/tutorial/view/1711
 
 
 ## Migrate old users, /home
@@ -168,3 +162,31 @@ LABEL=btrfs_pool    /mnt/albums    btrfs   defaults,subvol=@albums         0 0
 LABEL=btrfs_pool    /mnt/mythtv    btrfs   defaults,subvol=@mythtv         0 0
 LABEL=btrfs_pool    /media/btrfs   btrfs   defaults,noauto,compress,subvolid=0    0 0
 ```
+
+# Setup printer
+
+1. http://chadchenault.blogspot.ca/2012/05/brother-hl-2270dw-printer-driver.html
+2. Set to HQ1200 DPI
+3. Set to NoTumble duplex
+ 
+# Setup cloudprint
+
+1. git clone https://github.com/armooo/cloudprint
+2. cd cloudprint
+3. cp -r cloudprint /opt/
+4. cd /opt/cloudprint
+5. ./cloudprint.py -c  # type in Google credentials (don't use your real Google account -- security risk)
+6. apt-get install python-daemon
+7. Add file `/etc/cron.d/cloudprint`:
+
+```
+# /etc/cron.d/cloudprint
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+@reboot   root /opt/cloudprint/cloudprint.py -d -a /root/.cloudprintauth -p /var/lib/cloudprint.pid	
+@hourly   root /opt/cloudprint/cloudprint.py -d -a /root/.cloudprintauth -p /var/lib/cloudprint.pid	
+```
+
+Run `/opt/cloudprint/cloudprint.py -d -a /root/.cloudprintauth -p /var/lib/cloudprint.pid` and then check that `cat /var/lib/cloudprint.pid` has the process ID of the running process (use `ps auxf`).
