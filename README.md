@@ -190,3 +190,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 ```
 
 Run `/opt/cloudprint/cloudprint.py -d -a /root/.cloudprintauth -p /var/lib/cloudprint.pid` and then check that `cat /var/lib/cloudprint.pid` has the process ID of the running process (use `ps auxf`).
+
+# MythTv migration
+
+Follow these instructions (http://www.mythtv.org/wiki/Backend_migration) and remember:
+
+1. Use the new mythtv database password in /etc/mythtv/config.xml (must update all frontends to use new password)
+2. Change the database server host from `localhost` to the computer's IP address in:
+  1. /etc/mythtv/config.xml
+  2. /etc/mysql/debian
+  3. /etc/mysql/my.cnf  (the `bind` address)
