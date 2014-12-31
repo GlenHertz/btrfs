@@ -200,3 +200,23 @@ Follow these instructions (http://www.mythtv.org/wiki/Backend_migration) and rem
   1. /etc/mythtv/config.xml
   2. /etc/mysql/debian
   3. /etc/mysql/my.cnf  (the `bind` address)
+
+# Setup scanner
+
+Add your user to the "scanner" group and then log out and back in.
+
+Create file `/etc/udev/rules.d/50-brother-scanner.rules`:
+
+```
+SUBSYSTEM!="usb_device", ACTION!="add", GOTO="brother_rules_end"
+
+# Brother ADS-2000
+
+ATTR{idVendor}=="04f9", ATTR{idProduct}=="60a0", MODE="0666", OWNER="hertz", GROUP="scanner"
+
+LABEL="brother_rules_end"
+```
+
+Then restart `udev` with `sudo service udev restart`
+
+Download VueScan for Linux from Hamrick.com and `tar -zxvf vuex6494.tgz` then `cp -a Vuescan/* /usr/bin` and enter license info.
