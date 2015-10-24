@@ -1,3 +1,9 @@
+Preparing for Migration
+=======================
+
+1. Back up mythtv database: https://www.mythtv.org/wiki/Backend_migration
+
+
 Notes for my zfs->btrfs migration
 ==============
 
@@ -46,6 +52,22 @@ cd !$
 btrfs su sn @ @_1_installed
 btrfs su sn @home @_home_1_installed
 ```
+
+## Check that users IDs line up between old and new install
+
+```
+chown -R mythtv:mythtv /home/mythtv
+```
+
+
+## Set IP address
+
+
+## Install mythtv
+
+```
+wajig install mythtv
+
 
 Follow migration guide (using `export UGIDLIMIT=1000`): http://www.cyberciti.biz/faq/howto-move-migrate-user-accounts-old-to-new-server/
 
