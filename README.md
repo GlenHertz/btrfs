@@ -67,7 +67,8 @@ chown -R mythtv:mythtv /home/mythtv
 
 ```
 wajig install mythtv
-
+# set "mythtv" for mysql root and mythtv user passwords
+```
 
 Follow migration guide (using `export UGIDLIMIT=1000`): http://www.cyberciti.biz/faq/howto-move-migrate-user-accounts-old-to-new-server/
 
